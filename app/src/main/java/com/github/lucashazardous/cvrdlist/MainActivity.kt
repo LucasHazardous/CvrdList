@@ -1,15 +1,20 @@
 package com.github.lucashazardous.cvrdlist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.github.lucashazardous.cvrdlist.ui.theme.Beige
+import com.github.lucashazardous.cvrdlist.ui.theme.Black
 import com.github.lucashazardous.cvrdlist.ui.theme.CvrdListTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,27 +22,57 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CvrdListTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
+Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    CvrdListView()
                 }
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+fun CvrdListView() {
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        topBar = {
+            SmallTopAppBar(
+                title = {
+                    Row {
+                        Button(
+                            content = { Text(text = "Clear acquired") },
+                            onClick = {
+                            var removed = 0
+                                for (i in 0 until cards.size) {
+                                    if (cards[i - removed].acquired) {
+                                        cards.removeAt(i - removed)
+                                        removed++
+                                    }
+                                }
+                            }, colors = ButtonDefaults.buttonColors(containerColor = Beige)
+                        )
+                    }
+                }, colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Black,
+                    titleContentColor = Black
+                )
+            )
+        },
+        floatingActionButton = {
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CvrdListTheme {
-        Greeting("Android")
+        }) { _ ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp, 75.dp, 10.dp, 0.dp),
+        ) {
+            items(cards.size) { item ->
+                CardItem(cards[item])
+            }
+        }
     }
 }
