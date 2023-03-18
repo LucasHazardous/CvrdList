@@ -69,7 +69,8 @@ fun CardAdder(ctx: Context) {
                     Text(text = "")
                     Row {
                         Button(onClick = {
-                            ApiRequests.searchCards("name:\"$name\"", 4, 1)
+                            if(name.isNotEmpty())
+                                ApiRequests.searchCards("name:\"$name\"", 4, 1)
                         }, colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Black)) {
                             Text(text = "Search")
                         }
