@@ -4,11 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +20,7 @@ data class Card(
     var acquired: Boolean
     )
 
-var cards = mutableListOf(Card("Charizard", "https://images.pokemontcg.io/swsh4/25.png", "", false))
+var cards = mutableStateListOf(Card("Charizard", "https://images.pokemontcg.io/swsh4/25.png", "", false))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

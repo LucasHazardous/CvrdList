@@ -23,7 +23,7 @@ import com.github.lucashazardous.cvrdlist.ui.theme.Red
 import com.github.lucashazardous.cvrdlist.ui.theme.Teal
 
 var addCardOpened = mutableStateOf(false)
-var loadedSearchCards = mutableStateListOf<Card>()
+var loadedSearchCards = mutableStateListOf(Card("", "", "", false))
 
 @Composable
 fun CardAdder() {
@@ -41,17 +41,23 @@ fun CardAdder() {
             },
             confirmButton = {
                 Button(content = {
+                    Text("Confirm")
+                }, onClick = {
+                    for(card in loadedSearchCards) {
+                        if(card.acquired) {
+                            card.acquired = false
+                            cards.add(card.copy())
+                        }
+                    }
+                    close()
+                }, colors = ButtonDefaults.buttonColors(containerColor = Teal))
+            },
+            dismissButton = {
+                Button(content = {
                     Text("Cancel")
                 }, onClick = {
                     close()
                 }, colors = ButtonDefaults.buttonColors(containerColor = Red))
-            },
-            dismissButton = {
-                Button(content = {
-                    Text("Add")
-                }, onClick = {
-                    close()
-                }, colors = ButtonDefaults.buttonColors(containerColor = Teal))
             },
             text = {
                 Column {
@@ -62,7 +68,7 @@ fun CardAdder() {
                         })
                     Text(text = "")
                     Button(onClick = {
-                        ApiRequests.searchCards("name:\"$name\"", 1, 1)
+                        ApiRequests.searchCards("name:\"$name\"", 4, 1)
                     }) {
                         Text(text = "search")
                     }
