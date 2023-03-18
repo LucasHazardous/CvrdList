@@ -5,7 +5,7 @@ data class SearchCards(val data: List<SearchCard>)
 fun SearchCard.toCard() = Card(
     name = name + " " + set.name,
     imgUrl = images.small,
-    cardMarketUrl = tcgplayer.url,
+    cardMarketUrl = cardmarket.url,
     acquired = false
 )
 
