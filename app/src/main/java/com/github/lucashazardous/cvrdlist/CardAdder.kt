@@ -50,14 +50,14 @@ fun CardAdder(ctx: Context) {
                         }
                     }
                     close()
-                }, colors = ButtonDefaults.buttonColors(containerColor = Teal))
+                }, colors = ButtonDefaults.buttonColors(containerColor = Teal, contentColor = Beige))
             },
             dismissButton = {
                 Button(content = {
                     Text("Cancel")
                 }, onClick = {
                     close()
-                }, colors = ButtonDefaults.buttonColors(containerColor = Red))
+                }, colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = Beige))
             },
             text = {
                 Column {

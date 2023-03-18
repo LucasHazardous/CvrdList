@@ -2,9 +2,12 @@ package com.github.lucashazardous.cvrdlist
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -15,8 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.lucashazardous.cvrdlist.ui.theme.Red
-import com.github.lucashazardous.cvrdlist.ui.theme.Teal
+import com.github.lucashazardous.cvrdlist.ui.theme.*
 import java.io.File
 import java.nio.charset.Charset
 
@@ -36,9 +38,11 @@ fun CardItem(ctx: Context, card: Card) {
     var color by rememberSaveable { mutableStateOf(if(card.acquired) "Teal" else "Red") }
 
     val colorMap = mapOf("Red" to Red, "Teal" to Teal)
+    val isNightMode = ctx.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     Card(modifier = Modifier
         .padding(5.dp)
+        .border(2.dp, if (isNightMode) Beige else Purple80, RoundedCornerShape(7.dp))
         .pointerInput(Unit) {
             detectTapGestures(
                 onDoubleTap = {
