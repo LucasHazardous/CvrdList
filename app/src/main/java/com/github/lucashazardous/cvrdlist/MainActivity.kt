@@ -1,6 +1,7 @@
 package com.github.lucashazardous.cvrdlist
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CvrdListView()
+                    CvrdListView(this)
                 }
             }
         }
@@ -37,8 +38,9 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CvrdListView() {
-    Scaffold(modifier = Modifier.fillMaxSize(),
+fun CvrdListView(ctx: ComponentActivity) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             SmallTopAppBar(
                 title = {
@@ -46,14 +48,21 @@ fun CvrdListView() {
                         Button(
                             content = { Text(text = "Clear acquired") },
                             onClick = {
-                            var removed = 0
+                                var removed = 0
                                 for (i in 0 until cards.size) {
                                     if (cards[i - removed].acquired) {
                                         cards.removeAt(i - removed)
                                         removed++
                                     }
                                 }
-                            }, colors = ButtonDefaults.buttonColors(containerColor = Beige)
+                                val intent = Intent(ctx, MainActivity::class.java)
+                                ctx.startActivity(intent)
+                                ctx.finish()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Beige,
+                                contentColor = Black
+                            )
                         )
                     }
                 }, colors = TopAppBarDefaults.smallTopAppBarColors(
