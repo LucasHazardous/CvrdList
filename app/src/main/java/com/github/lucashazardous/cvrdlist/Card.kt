@@ -29,7 +29,7 @@ fun CardItem(card: Card) {
 
     val colorMap = mapOf("Red" to Red, "Teal" to Teal)
 
-    Card {
+    Card(modifier = Modifier.padding(2.dp)) {
         Column(
             modifier = Modifier
                 .height(150.dp)
