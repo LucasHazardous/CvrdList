@@ -1,6 +1,7 @@
 package com.github.lucashazardous.cvrdlist
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,17 +13,29 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.github.lucashazardous.cvrdlist.ui.theme.Beige
 import com.github.lucashazardous.cvrdlist.ui.theme.Black
 import com.github.lucashazardous.cvrdlist.ui.theme.CvrdListTheme
 import com.github.lucashazardous.cvrdlist.ui.theme.Red
+import com.google.gson.Gson
+
+val gson = Gson()
+var refresh = false
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val lifecycleOwner = LocalLifecycleOwner.current
+            CycleObserver(applicationContext, lifecycleOwner)
+
             CvrdListTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -32,6 +45,32 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CycleObserver(ctx: Context, lifecycle: LifecycleOwner) {
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver {
+                _, event ->
+            run {
+                when (event) {
+                    Lifecycle.Event.ON_STOP -> {
+                        if(!refresh)
+                            saveCardsToFile(ctx)
+                        refresh = false
+                    }
+                    Lifecycle.Event.ON_CREATE -> {
+                        if(!refresh)
+                            readFromFile(ctx)
+                        refresh = false
+                    }
+                    else -> {}
+                }
+            }
+        }
+        lifecycle.lifecycle.addObserver(observer)
+        onDispose { lifecycle.lifecycle.removeObserver(observer) }
     }
 }
 
@@ -55,6 +94,7 @@ fun CvrdListView(ctx: ComponentActivity) {
                                         removed++
                                     }
                                 }
+                                refresh = true
                                 val intent = Intent(ctx, MainActivity::class.java)
                                 ctx.startActivity(intent)
                                 ctx.finish()
