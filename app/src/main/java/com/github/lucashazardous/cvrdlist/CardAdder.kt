@@ -1,5 +1,6 @@
 package com.github.lucashazardous.cvrdlist
 
+import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -24,7 +25,7 @@ var addCardOpened = mutableStateOf(false)
 var loadedSearchCards = mutableStateListOf(Card("", "", "", false))
 
 @Composable
-fun CardAdder() {
+fun CardAdder(ctx: Context) {
     var name by rememberSaveable { mutableStateOf("") }
 
     val close = {
@@ -81,7 +82,7 @@ fun CardAdder() {
                     Text(text = "")
                     LazyRow {
                         items(loadedSearchCards.size) { item ->
-                            CardItem(loadedSearchCards[item])
+                            CardItem(ctx, loadedSearchCards[item])
                         }
                     }
                 }

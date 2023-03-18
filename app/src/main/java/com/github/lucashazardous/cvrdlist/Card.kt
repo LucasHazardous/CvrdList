@@ -1,6 +1,9 @@
 package com.github.lucashazardous.cvrdlist
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -9,12 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.lucashazardous.cvrdlist.ui.theme.Red
 import com.github.lucashazardous.cvrdlist.ui.theme.Teal
 import java.io.File
 import java.nio.charset.Charset
+
 
 data class Card(
     val name: String,
@@ -27,12 +32,21 @@ var cards = mutableStateListOf<Card>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardItem(card: Card) {
+fun CardItem(ctx: Context, card: Card) {
     var color by rememberSaveable { mutableStateOf(if(card.acquired) "Teal" else "Red") }
 
     val colorMap = mapOf("Red" to Red, "Teal" to Teal)
 
-    Card(modifier = Modifier.padding(5.dp)) {
+    Card(modifier = Modifier
+        .padding(5.dp)
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onDoubleTap = {
+                    if(card.cardMarketUrl.isNotEmpty())
+                        ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(card.cardMarketUrl)))
+                }
+            )
+        }) {
         Column(
             modifier = Modifier
                 .height(155.dp)

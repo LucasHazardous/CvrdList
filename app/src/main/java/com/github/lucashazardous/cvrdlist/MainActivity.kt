@@ -122,7 +122,7 @@ fun CvrdListView(ctx: ComponentActivity) {
                 )
             }
         }) { _ ->
-        CardAdder()
+        CardAdder(ctx)
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
@@ -130,7 +130,7 @@ fun CvrdListView(ctx: ComponentActivity) {
                 .padding(10.dp, 75.dp, 10.dp, 0.dp),
         ) {
             items(cards.size) { item ->
-                CardItem(cards[item])
+                CardItem(ctx, cards[item])
             }
         }
     }
