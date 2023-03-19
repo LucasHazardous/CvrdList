@@ -113,7 +113,14 @@ fun CvrdListView(ctx: ComponentActivity) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { addCardOpened.value = !addCardOpened.value },
+                onClick = {
+                    if (groupOpened.value == -1) {
+                        addGroupOpened.value = !addGroupOpened.value
+                    } else {
+                        addCardOpened.value = !addCardOpened.value
+                    }
+
+                },
                 containerColor = Beige, contentColor = Red
             ) {
                 Icon(
@@ -123,14 +130,23 @@ fun CvrdListView(ctx: ComponentActivity) {
             }
         }) { _ ->
         CardAdder(ctx)
+        GroupAdder()
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp, 75.dp, 10.dp, 0.dp),
         ) {
-            items(cards.size) { item ->
-                CardItem(ctx, cards[item])
+            if(cardGroups.size > 0) {
+                if(groupOpened.value == -1) {
+                    items(cardGroups.size) { item ->
+                        CardGroupItem(ctx, cardGroups[item])
+                    }
+                } else {
+                    items(cards.size) { item ->
+                        CardItem(ctx, cards[item])
+                    }
+                }
             }
         }
     }
