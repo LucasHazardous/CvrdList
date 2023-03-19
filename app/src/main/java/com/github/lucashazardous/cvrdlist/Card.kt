@@ -19,9 +19,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.lucashazardous.cvrdlist.ui.theme.*
-import java.io.File
-import java.nio.charset.Charset
-
 
 data class Card(
     val name: String,
@@ -67,23 +64,5 @@ fun CardItem(ctx: Context, card: Card) {
                 Icon(Icons.Filled.Star, "Is Acquired", Modifier.size(15.dp))
             }
         }
-    }
-}
-
-fun saveCardsToFile(ctx: Context) {
-    val json = gson.toJson(cards)
-    val file = File(ctx.filesDir, "cards.json")
-    file.delete()
-    file.createNewFile()
-    file.writeText(json)
-}
-
-fun readFromFile(ctx: Context) {
-    val file = File(ctx.filesDir, "cards.json")
-    if (!file.createNewFile()) {
-        val text = file.readText(Charset.defaultCharset())
-        val readCards = gson.fromJson(text, Array<Card>::class.java)
-        cards.clear()
-        cards.addAll(readCards)
     }
 }
