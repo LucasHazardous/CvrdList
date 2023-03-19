@@ -84,26 +84,40 @@ fun CvrdListView(ctx: ComponentActivity) {
             SmallTopAppBar(
                 title = {
                     Row {
-                        Button(
-                            content = { Text(text = "Clear acquired") },
-                            onClick = {
-                                var removed = 0
-                                for (i in 0 until cards.size) {
-                                    if (cards[i - removed].acquired) {
-                                        cards.removeAt(i - removed)
-                                        removed++
-                                    }
-                                }
-                                refresh = true
-                                val intent = Intent(ctx, MainActivity::class.java)
-                                ctx.startActivity(intent)
-                                ctx.finish()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Beige,
-                                contentColor = Black
+                        if (groupOpened.value != -1) {
+                            Button(
+                                content = { Text(text = "Back") },
+                                onClick = {
+                                    groupOpened.value = -1
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Beige,
+                                    contentColor = Black
+                                )
                             )
-                        )
+                            Button(
+                                content = { Text(text = "Clear acquired") },
+                                onClick = {
+                                    var removed = 0
+                                    for (i in 0 until cards.size) {
+                                        if (cards[i - removed].acquired) {
+                                            cards.removeAt(i - removed)
+                                            removed++
+                                        }
+                                    }
+                                    cardGroups[groupOpened.value].cards.clear()
+                                    cardGroups[groupOpened.value].cards.addAll(cards)
+                                    refresh = true
+                                    val intent = Intent(ctx, MainActivity::class.java)
+                                    ctx.startActivity(intent)
+                                    ctx.finish()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Beige,
+                                    contentColor = Black
+                                )
+                            )
+                        }
                     }
                 }, colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Black,

@@ -28,7 +28,7 @@ import java.nio.charset.Charset
 var cardGroups = mutableStateListOf<CardGroup>()
 var groupOpened = mutableStateOf(-1)
 
-data class CardGroup(val name: String, var cards: List<Card>)
+data class CardGroup(val name: String, var cards: ArrayList<Card>)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +41,8 @@ fun CardGroupItem(ctx: Context, cardGroup: CardGroup) {
         .pointerInput(Unit) {
             detectTapGestures(
                 onDoubleTap = {
+                    cards.clear()
+                    cards.addAll(cardGroup.cards)
                     groupOpened.value = cardGroups.indexOf(cardGroup)
                 }
             )
@@ -69,11 +71,12 @@ fun saveCardsToFile(ctx: Context) {
 
 fun readFromFile(ctx: Context) {
     val file = File(ctx.filesDir, "cards.json")
-    file.delete()
     if (!file.createNewFile()) {
         val text = file.readText(Charset.defaultCharset())
         val readCards = gson.fromJson(text, Array<CardGroup>::class.java)
-        cardGroups.clear()
-        cardGroups.addAll(readCards)
+        if(readCards != null) {
+            cardGroups.clear()
+            cardGroups.addAll(readCards)
+        }
     }
 }

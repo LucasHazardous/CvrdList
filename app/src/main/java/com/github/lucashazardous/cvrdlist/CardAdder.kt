@@ -46,7 +46,9 @@ fun CardAdder(ctx: Context) {
                     for(card in loadedSearchCards) {
                         if(card.acquired) {
                             card.acquired = false
-                            cards.add(card.copy())
+                            val copy = card.copy()
+                            cards.add(copy)
+                            cardGroups[groupOpened.value].cards.add(copy)
                         }
                     }
                     close()

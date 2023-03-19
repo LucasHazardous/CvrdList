@@ -39,9 +39,7 @@ fun GroupAdder() {
                         Text("Confirm")
                     },
                     onClick = {
-                        for (card in loadedSearchCards) {
-                            cardGroups.add(CardGroup(name, listOf()))
-                        }
+                        cardGroups.add(CardGroup(name, ArrayList()))
                         close()
                     },
                     colors = ButtonDefaults.buttonColors(
