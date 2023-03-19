@@ -27,6 +27,8 @@ var loadedSearchCards = mutableStateListOf(Card("", "", "", false))
 @Composable
 fun CardAdder(ctx: Context) {
     var name by rememberSaveable { mutableStateOf("") }
+    var previousName by rememberSaveable { mutableStateOf("") }
+    var page by rememberSaveable { mutableStateOf(0) }
 
     val close = {
         name = ""
@@ -71,8 +73,15 @@ fun CardAdder(ctx: Context) {
                     Text(text = "")
                     Row {
                         Button(onClick = {
-                            if(name.isNotEmpty())
-                                ApiRequests.searchCards("name:\"$name\"", 4, 1)
+                            if(name.isNotEmpty()) {
+                                if(previousName != name) {
+                                    page = 1
+                                    previousName = name
+                                } else {
+                                    page++
+                                }
+                                ApiRequests.searchCards("name:\"$name\"", 4, page)
+                            }
                         }, colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Black)) {
                             Text(text = "Search")
                         }
