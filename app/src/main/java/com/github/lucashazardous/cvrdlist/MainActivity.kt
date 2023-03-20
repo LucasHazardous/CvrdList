@@ -143,6 +143,30 @@ fun CvrdListView(ctx: ComponentActivity) {
                 )
             }
         }) { _ ->
+        if (deleteGroupQuestion.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    deleteGroupQuestion.value = false
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            cardGroups.remove(cardGroupToDelete)
+                            deleteGroupQuestion.value = false
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Beige,
+                            contentColor = Black
+                        )
+                    )
+                    { Text(text = "OK") }
+                },
+                text = {
+                    Text("Delete selected group?", color = Beige)
+                },
+                containerColor = Black
+            )
+        }
         CardAdder(ctx)
         GroupAdder()
         LazyVerticalGrid(

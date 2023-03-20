@@ -27,6 +27,8 @@ import java.nio.charset.Charset
 
 var cardGroups = mutableStateListOf<CardGroup>()
 var groupOpened = mutableStateOf(-1)
+var deleteGroupQuestion = mutableStateOf(false)
+lateinit var cardGroupToDelete: CardGroup
 
 data class CardGroup(val name: String, var cards: ArrayList<Card>)
 
@@ -44,6 +46,10 @@ fun CardGroupItem(ctx: Context, cardGroup: CardGroup) {
                     cards.clear()
                     cards.addAll(cardGroup.cards)
                     groupOpened.value = cardGroups.indexOf(cardGroup)
+                },
+                onLongPress = {
+                    cardGroupToDelete = cardGroup
+                    deleteGroupQuestion.value = true
                 }
             )
         }
