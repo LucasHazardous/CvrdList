@@ -39,7 +39,8 @@ fun GroupAdder() {
                         Text("Confirm")
                     },
                     onClick = {
-                        cardGroups.add(CardGroup(name, ArrayList()))
+                        if(name.trim().isNotEmpty())
+                            cardGroups.add(CardGroup(name, ArrayList()))
                         close()
                     },
                     colors = ButtonDefaults.buttonColors(
