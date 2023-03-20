@@ -39,7 +39,9 @@ class ApiRequests {
                         Log.d("ApiRequests", "onResponse: ${response.body()}")
                         val searchCards = response.body()!!
                         for(searchCard in searchCards.data) {
-                            loadedSearchCards.add(searchCard.toCard())
+                            try {
+                                loadedSearchCards.add(searchCard.toCard())
+                            } catch (_: NullPointerException) {}
                         }
                     }
                 }
