@@ -4,8 +4,8 @@
 
 ## Preview
 
-<img align="left" width="291" src="./preview/lighttheme.png">
-<img width="300" src="./preview/darktheme.png">
+<img align="left" width="300" src="./preview/decks.png">
+<img width="298" src="./preview/cards.png">
 
 ---
 
