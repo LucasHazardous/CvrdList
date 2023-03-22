@@ -2,7 +2,6 @@ package com.github.lucashazardous.cvrdlist
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -16,11 +15,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.lucashazardous.cvrdlist.ui.theme.*
 
 data class Card(
+    var id: Int,
     val name: String,
     val imgUrl: String,
     val cardMarketUrl: String,
@@ -32,14 +32,18 @@ var cards = mutableStateListOf<Card>()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardItem(ctx: Context, card: Card) {
-    var color by rememberSaveable { mutableStateOf(if(card.acquired) "Teal" else "Red") }
 
-    val colorMap = mapOf("Red" to Red, "Teal" to Teal)
-    val isNightMode = ctx.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+    var color by rememberSaveable { mutableStateOf("") }
+    val colorSelect = {
+        color = if(card.acquired) "Primary" else "Secondary"
+    }
+    colorSelect()
+    val colorMap = mapOf("Primary" to MaterialTheme.colorScheme.primary, "Secondary" to MaterialTheme.colorScheme.secondary)
 
-    Card(modifier = Modifier
+    Card(
+        modifier = Modifier
         .padding(5.dp)
-        .border(2.dp, if (isNightMode) Beige else Purple80, RoundedCornerShape(7.dp))
+        .border(2.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(7.dp))
         .pointerInput(Unit) {
             detectTapGestures(
                 onDoubleTap = {
@@ -50,18 +54,19 @@ fun CardItem(ctx: Context, card: Card) {
         }) {
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .height(155.dp)
                 .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            AsyncImage(model = card.imgUrl, contentDescription = card.name + " image", modifier = Modifier.size(100.dp))
-            Text(card.name, maxLines = 1)
+            AsyncImage(model = card.imgUrl, contentDescription = card.name + " image", modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally))
+            Text(card.name, maxLines = 1, textAlign = TextAlign.Center)
             IconButton(onClick = {
                 card.acquired = !card.acquired
-                color = if(card.acquired) "Teal" else "Red"
+                colorSelect()
             }, colors = IconButtonDefaults.iconButtonColors(contentColor = colorMap[color]!!)) {
-                Icon(Icons.Filled.Star, "Is Acquired", Modifier.size(15.dp))
+                Icon(Icons.Filled.Star, "Is Acquired", Modifier.size(24.dp))
             }
         }
     }

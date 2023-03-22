@@ -1,9 +1,7 @@
 package com.github.lucashazardous.cvrdlist.api
 
 import android.util.Log
-import com.github.lucashazardous.cvrdlist.SearchCards
-import com.github.lucashazardous.cvrdlist.loadedSearchCards
-import com.github.lucashazardous.cvrdlist.toCard
+import com.github.lucashazardous.cvrdlist.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -29,8 +27,8 @@ class ApiRequests {
 
         private val api: ServerApi = retrofit.create(ServerApi::class.java)
 
-        fun searchCards(searchQuery: String, pageSize: Int, page: Int) {
-            api.searchCards(searchQuery, pageSize, page).enqueue(object: Callback<SearchCards> {
+        fun searchCards(searchQuery: String, pageSize: Int, page: Int, orderBy: String) {
+            api.searchCards(searchQuery, pageSize, page, orderBy).enqueue(object: Callback<SearchCards> {
                 override fun onResponse(
                     call: Call<SearchCards>,
                     response: Response<SearchCards>
@@ -40,7 +38,7 @@ class ApiRequests {
                         val searchCards = response.body()!!
                         for(searchCard in searchCards.data) {
                             try {
-                                loadedSearchCards.add(searchCard.toCard())
+                                loadedSearchCards.add(searchCard.toCard(++cardSearchIdCounter))
                             } catch (_: NullPointerException) {}
                         }
                     }

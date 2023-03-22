@@ -6,23 +6,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.lucashazardous.cvrdlist.api.ApiRequests
-import com.github.lucashazardous.cvrdlist.ui.theme.Beige
-import com.github.lucashazardous.cvrdlist.ui.theme.Black
-import com.github.lucashazardous.cvrdlist.ui.theme.Red
-import com.github.lucashazardous.cvrdlist.ui.theme.Teal
 
 var addCardOpened = mutableStateOf(false)
-var loadedSearchCards = mutableStateListOf(Card("", "", "", false))
+var loadedSearchCards = mutableStateListOf<Card>()
+var cardSearchIdCounter = 0
 
 @Composable
 fun CardAdder(ctx: Context) {
@@ -37,7 +31,6 @@ fun CardAdder(ctx: Context) {
 
     if (addCardOpened.value) {
         AlertDialog(
-            containerColor = Black,
             onDismissRequest = {
                 close()
             },
@@ -49,19 +42,20 @@ fun CardAdder(ctx: Context) {
                         if(card.acquired) {
                             card.acquired = false
                             val copy = card.copy()
+                            copy.id = ++cardGroups[groupOpened.value].lastId
                             cards.add(copy)
                             cardGroups[groupOpened.value].cards.add(copy)
                         }
                     }
                     close()
-                }, colors = ButtonDefaults.buttonColors(containerColor = Teal, contentColor = Beige))
+                })
             },
             dismissButton = {
                 Button(content = {
                     Text("Cancel")
                 }, onClick = {
                     close()
-                }, colors = ButtonDefaults.buttonColors(containerColor = Red, contentColor = Beige))
+                })
             },
             text = {
                 Column {
@@ -73,6 +67,13 @@ fun CardAdder(ctx: Context) {
                     Text(text = "")
                     Row {
                         Button(onClick = {
+                            cardSearchIdCounter = 0
+                            loadedSearchCards.clear()
+                        }) {
+                            Text(text = "Clear")
+                        }
+                        Spacer(Modifier.weight(1f))
+                        Button(onClick = {
                             if(name.isNotEmpty()) {
                                 if(previousName != name) {
                                     page = 1
@@ -80,22 +81,28 @@ fun CardAdder(ctx: Context) {
                                 } else {
                                     page++
                                 }
-                                ApiRequests.searchCards("name:\"$name\"", 4, page)
+                                ApiRequests.searchCards("name:\"$name\"", 4, page, "-set.releaseDate")
                             }
-                        }, colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Black)) {
+                        }) {
                             Text(text = "Search")
-                        }
-                        Button(onClick = {
-                            loadedSearchCards.removeRange(1, loadedSearchCards.size)
-                        }, colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Black)) {
-                            Text(text = "Clear")
                         }
                     }
                     Text(text = "")
                     LazyRow {
-                        items(loadedSearchCards.size) { item ->
-                            CardItem(ctx, loadedSearchCards[item])
+                        if (loadedSearchCards.size == 0) {
+                            item { Box(modifier = Modifier.height(160.dp)) {} }
+                        } else {
+                            items(
+                                loadedSearchCards.size,
+                                key = { item ->
+                                    loadedSearchCards[item].id
+                                },
+                                itemContent = {item ->
+                                    CardItem(ctx, loadedSearchCards[item])
+                                }
+                            )
                         }
+
                     }
                 }
             }
@@ -111,15 +118,15 @@ fun BoxDecoration(value: String, placeholder: String) {
             .fillMaxWidth()
             .border(
                 width = 2.dp,
-                color = Beige,
+                color = MaterialTheme.colorScheme.tertiary,
                 shape = RoundedCornerShape(size = 16.dp)
             )
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         if (value.isEmpty()) {
-            Text(text = placeholder, modifier = Modifier.align(Alignment.Center), color = Beige)
+            Text(text = placeholder, modifier = Modifier.align(Alignment.Center))
         } else {
-            Text(text = value, modifier = Modifier.align(Alignment.Center), color = Beige)
+            Text(text = value, modifier = Modifier.align(Alignment.Center))
         }
     }
 }

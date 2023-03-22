@@ -2,7 +2,6 @@ package com.github.lucashazardous.cvrdlist
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,23 +10,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.lucashazardous.cvrdlist.ui.theme.Beige
-import com.github.lucashazardous.cvrdlist.ui.theme.Black
 import com.github.lucashazardous.cvrdlist.ui.theme.CvrdListTheme
-import com.github.lucashazardous.cvrdlist.ui.theme.Red
 import com.google.gson.Gson
 
 val gson = Gson()
-var refresh = false
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +54,10 @@ fun CycleObserver(ctx: Context, lifecycle: LifecycleOwner) {
             run {
                 when (event) {
                     Lifecycle.Event.ON_STOP -> {
-                        if(!refresh)
-                            saveCardsToFile(ctx)
-                        refresh = false
+                        saveCardsToFile(ctx)
                     }
                     Lifecycle.Event.ON_CREATE -> {
-                        if(!refresh)
-                            readFromFile(ctx)
-                        refresh = false
+                        readFromFile(ctx)
                     }
                     else -> {}
                 }
@@ -81,48 +75,51 @@ fun CvrdListView(ctx: ComponentActivity) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            SmallTopAppBar(
-                title = {
-                    Row {
-                        if (groupOpened.value != -1) {
-                            Button(
-                                content = { Text(text = "Back") },
-                                onClick = {
-                                    groupOpened.value = -1
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Beige,
-                                    contentColor = Black
+            CenterAlignedTopAppBar(
+                navigationIcon = {
+                    if (groupOpened.value != -1)
+                        IconButton(
+                            content = {
+                                Icon(
+                                    Icons.Default.ArrowBack,
+                                    "Back",
+                                    tint = MaterialTheme.colorScheme.tertiary
                                 )
-                            )
-                            Button(
-                                content = { Text(text = "Clear acquired") },
-                                onClick = {
-                                    var removed = 0
-                                    for (i in 0 until cards.size) {
-                                        if (cards[i - removed].acquired) {
-                                            cards.removeAt(i - removed)
-                                            removed++
-                                        }
+                            },
+                            onClick = {
+                                groupOpened.value = -1
+                            }
+                        )
+                },
+                actions = {
+                    if (groupOpened.value != -1)
+                        IconButton(
+                            content = {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    "Back",
+                                    tint = MaterialTheme.colorScheme.tertiary
+                                )
+                            },
+                            onClick = {
+                                var removed = 0
+                                for (i in 0 until cards.size) {
+                                    if (cards[i - removed].acquired) {
+                                        cards.removeAt(i - removed)
+                                        removed++
                                     }
-                                    cardGroups[groupOpened.value].cards.clear()
-                                    cardGroups[groupOpened.value].cards.addAll(cards)
-                                    refresh = true
-                                    val intent = Intent(ctx, MainActivity::class.java)
-                                    ctx.startActivity(intent)
-                                    ctx.finish()
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Beige,
-                                    contentColor = Black
-                                )
-                            )
-                        }
-                    }
-                }, colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Black,
-                    titleContentColor = Black
-                )
+                                }
+                                cardGroups[groupOpened.value].cards.clear()
+                                cardGroups[groupOpened.value].cards.addAll(cards)
+                            }
+                        )
+                },
+                title = {
+                        Text(
+                            "CvrdList",
+                            textAlign = TextAlign.Center,
+                        )
+                }
             )
         },
         floatingActionButton = {
@@ -135,7 +132,6 @@ fun CvrdListView(ctx: ComponentActivity) {
                     }
 
                 },
-                containerColor = Beige, contentColor = Red
             ) {
                 Icon(
                     Icons.Filled.Add, "Add card",
@@ -153,18 +149,13 @@ fun CvrdListView(ctx: ComponentActivity) {
                         onClick = {
                             cardGroups.remove(cardGroupToDelete)
                             deleteGroupQuestion.value = false
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Beige,
-                            contentColor = Black
-                        )
+                        }
                     )
                     { Text(text = "OK") }
                 },
                 text = {
-                    Text("Delete selected group?", color = Beige)
-                },
-                containerColor = Black
+                    Text("Delete selected group?")
+                }
             )
         }
         CardAdder(ctx)
@@ -173,17 +164,29 @@ fun CvrdListView(ctx: ComponentActivity) {
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp, 75.dp, 10.dp, 0.dp),
+                .padding(10.dp, 75.dp, 10.dp, 0.dp)
         ) {
             if(cardGroups.size > 0) {
                 if(groupOpened.value == -1) {
-                    items(cardGroups.size) { item ->
-                        CardGroupItem(ctx, cardGroups[item])
-                    }
+                    items(
+                        cardGroups.size,
+                        key = { item ->
+                            cardGroups[item].name
+                        },
+                        itemContent = {item ->
+                            CardGroupItem(cardGroups[item])
+                        }
+                    )
                 } else {
-                    items(cards.size) { item ->
-                        CardItem(ctx, cards[item])
-                    }
+                    items(
+                        cards.size,
+                        key = { item ->
+                            cards[item].id
+                        },
+                        itemContent = {item ->
+                            CardItem(ctx, cards[item])
+                        }
+                    )
                 }
             }
         }

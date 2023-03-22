@@ -11,5 +11,5 @@ interface ServerApi {
     }
 
     @GET("cards")
-    fun searchCards(@Query("q") searchQuery: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Call<SearchCards>
+    fun searchCards(@Query("q") searchQuery: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int, @Query("orderBy") orderBy: String): Call<SearchCards>
 }

@@ -2,7 +2,8 @@ package com.github.lucashazardous.cvrdlist
 
 data class SearchCards(val data: List<SearchCard>)
 
-fun SearchCard.toCard() = Card(
+fun SearchCard.toCard(newId: Int) = Card(
+    id = newId,
     name = name + " " + set.name,
     imgUrl = images.small,
     cardMarketUrl = cardmarket.url,
