@@ -2,6 +2,8 @@
 
 # CvrdList
 
+> This project uses [Pokemon TCG API](https://pokemontcg.io/).
+
 ## Preview
 
 <img align="left" width="300" src="./preview/decks.png">
@@ -17,7 +19,7 @@ To enter a deck double click an element (they contain name and current card coun
 
 After entering a deck you will be presented with two new options in the upper menu:
 
-- **Back** - returns to deck view
-- **Clear acquired** - removes cards in the current deck annotated with green star
+- **Left arrow** - returns to deck view
+- **Bin** - removes cards in the current deck annotated with non-default star color (changes on star press)
 
-To add cards to your deck press the **+** symbol to enter card adding menu, enter name of a card and press **Search**. Select cards that you want by clicking the star and making it turn green and then click **Confirm**. Empty element in the adding menu is there on purpose to act as a separator. If you continue to click the search button you will get different pages with other card versions. Press **Clear** to remove all search results. Double click a card (either in adding window or in the list to open card's Cardmarket page - allows for easy price evaluation).
+To add cards to your deck press the **+** symbol to enter card adding menu, enter name of a card and press **Search**. Select cards that you want by clicking the star and making it change color and then click **Confirm**. If you continue to click the search button you will get different pages with other card versions. Press **Clear** to remove all search results. Double click a card (either in adding window or in the list to open card's [Cardmarket](https://www.cardmarket.com/en) page - allows for easy price evaluation). To exit adding menu (without adding cards) click away from the panel or press **Cancel**.
