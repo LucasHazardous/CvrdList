@@ -35,10 +35,10 @@ fun CardItem(ctx: Context, card: Card) {
 
     var color by rememberSaveable { mutableStateOf("") }
     val colorSelect = {
-        color = if(card.acquired) "Primary" else "Secondary"
+        color = if(card.acquired) "Error" else "Secondary"
     }
     colorSelect()
-    val colorMap = mapOf("Primary" to MaterialTheme.colorScheme.primary, "Secondary" to MaterialTheme.colorScheme.secondary)
+    val colorMap = mapOf("Error" to MaterialTheme.colorScheme.error, "Secondary" to MaterialTheme.colorScheme.secondary)
 
     Card(
         modifier = Modifier
