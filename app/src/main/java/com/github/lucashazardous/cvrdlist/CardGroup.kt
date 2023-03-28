@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import java.io.File
 import java.nio.charset.Charset
 
+const val CARD_COLLECTION_FILENAME = "cards.json"
+
 var cardGroups = mutableStateListOf<CardGroup>()
 var groupOpened = mutableStateOf(-1)
 var deleteGroupQuestion = mutableStateOf(false)
@@ -56,7 +58,6 @@ fun CardGroupItem(cardGroup: CardGroup) {
         ){
             Text(cardGroup.name, textAlign = TextAlign.Center)
             Text(cardGroup.cards.size.toString(),
-                color = MaterialTheme.colorScheme.tertiary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.CenterHorizontally))
         }
@@ -65,14 +66,14 @@ fun CardGroupItem(cardGroup: CardGroup) {
 
 fun saveCardsToFile(ctx: Context) {
     val json = gson.toJson(cardGroups)
-    val file = File(ctx.filesDir, "cards.json")
+    val file = File(ctx.filesDir, CARD_COLLECTION_FILENAME)
     file.delete()
     file.createNewFile()
     file.writeText(json)
 }
 
 fun readFromFile(ctx: Context) {
-    val file = File(ctx.filesDir, "cards.json")
+    val file = File(ctx.filesDir, CARD_COLLECTION_FILENAME)
     if (!file.createNewFile()) {
         val text = file.readText(Charset.defaultCharset())
         val readCards = gson.fromJson(text, Array<CardGroup>::class.java)
