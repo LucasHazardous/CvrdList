@@ -1,9 +1,9 @@
 package com.github.lucashazardous.cvrdlist
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,11 +48,14 @@ fun GroupAdder() {
             },
             text = {
                 Column {
-                    BasicTextField(value = name,
+                    OutlinedTextField(value = name,
                         onValueChange = { name = it },
-                        decorationBox = {
-                            BoxDecoration(name, "Name")
-                        })
+                        label = {
+                            Text("Name")
+                        },
+                        singleLine = true,
+                        maxLines = 1
+                    )
                 }
             }
         )

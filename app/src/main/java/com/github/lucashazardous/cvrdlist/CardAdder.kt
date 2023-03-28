@@ -1,15 +1,14 @@
 package com.github.lucashazardous.cvrdlist
 
 import android.content.Context
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.lucashazardous.cvrdlist.api.ApiRequests
@@ -59,12 +58,15 @@ fun CardAdder(ctx: Context) {
             },
             text = {
                 Column {
-                    BasicTextField(value = name,
+                    OutlinedTextField(value = name,
                         onValueChange = { name = it },
-                        decorationBox = {
-                            BoxDecoration(name, "Name")
-                        })
-                    Text(text = "")
+                        label = {
+                            Text("Name")
+                        },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+                    Text("")
                     Row {
                         Button(onClick = {
                             cardSearchIdCounter = 0
@@ -87,7 +89,7 @@ fun CardAdder(ctx: Context) {
                             Text(text = "Search")
                         }
                     }
-                    Text(text = "")
+                    Text("")
                     LazyRow {
                         if (loadedSearchCards.size == 0) {
                             item { Box(modifier = Modifier.height(160.dp)) {} }
@@ -107,26 +109,5 @@ fun CardAdder(ctx: Context) {
                 }
             }
         )
-    }
-}
-
-@Composable
-fun BoxDecoration(value: String, placeholder: String) {
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 64.dp)
-            .fillMaxWidth()
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.tertiary,
-                shape = RoundedCornerShape(size = 16.dp)
-            )
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-    ) {
-        if (value.isEmpty()) {
-            Text(text = placeholder, modifier = Modifier.align(Alignment.Center))
-        } else {
-            Text(text = value, modifier = Modifier.align(Alignment.Center))
-        }
     }
 }
