@@ -2,9 +2,12 @@ package com.github.lucashazardous.cvrdlist
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -16,6 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,6 +30,8 @@ import com.github.lucashazardous.cvrdlist.ui.theme.CvrdListTheme
 import com.google.gson.Gson
 
 val gson = Gson()
+
+const val REPO_LINK = "https://github.com/lucashazardous/CvrdList"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +124,12 @@ fun CvrdListView(ctx: ComponentActivity) {
                         Text(
                             "CvrdList",
                             textAlign = TextAlign.Center,
+                            modifier = Modifier.pointerInput(Unit) {
+                                detectTapGestures(onLongPress = {
+                                    ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(REPO_LINK)))
+                                })
+                            },
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                 }
             )
@@ -135,7 +147,8 @@ fun CvrdListView(ctx: ComponentActivity) {
             ) {
                 Icon(
                     Icons.Filled.Add, "Add card",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.tertiary
                 )
             }
         }) { _ ->
